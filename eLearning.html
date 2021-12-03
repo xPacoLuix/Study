@@ -1,0 +1,252 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: rgb(240, 240, 240);
+        }
+
+        .grid {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            flex-wrap: wrap;
+            margin: auto;
+        }
+
+        .cell {
+            border: 1px solid #ccc;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 900;
+        }
+
+        .img {
+            display: none;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+        }
+
+        #div_teacher {
+            background-color: rgb(154, 228, 255);
+        }
+
+        .flex-left {
+            display: flex;
+            justify-content: flex-start;
+
+        }
+
+        .flex-right {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .mark_box {
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var player = 1;
+            var round = 1;
+            var click = 0;
+            var con = true;
+            var question_time = 0;
+            var question_list = ["https://www.google.com/", "2", "3", "4", "5", "6"];
+            var reset_question = [false, false, false, false, false, false];
+            var question_used = [false, false, false, false, false, false];
+            var cell_array = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+            var img_list = ["https://img.zcool.cn/community/011fab5806e03aa84a0e282b529db9.gif", "http://pic.90sjimg.com/design/00/71/42/87/5923a8516acf0.png"];
+
+
+            $("#player1_img").attr("src", img_list[0]);
+            $("#player2_img").attr("src", img_list[1]);
+
+            $(".cell").click(function () {
+                var cell = $(this).get(0).id;
+                if (cell_array[cell] === 0 && con) {
+                    cell_array[cell] = player;
+                    if (player == 1) {
+                        player = 2;
+                        $("#img" + cell).attr("src", img_list[0]);
+                        $("#img" + cell).show();
+                    } else {
+                        player = 1;
+                        $("#img" + cell).attr("src", img_list[1]);
+                        $("#img" + cell).show();
+                    }
+                    click++;
+                    test(cell_array);
+                }
+                console.log(cell_array);
+                if (click == 9) {
+                    if (con) {
+                        $(".js-header").text("Draw");
+                    }
+                }
+            });
+
+            function test(cell_array) {
+                check(cell_array[0], cell_array[1], cell_array[2]);
+                check(cell_array[3], cell_array[4], cell_array[5]);
+                check(cell_array[6], cell_array[7], cell_array[8]);
+                check(cell_array[0], cell_array[3], cell_array[6]);
+                check(cell_array[1], cell_array[4], cell_array[7]);
+                check(cell_array[2], cell_array[5], cell_array[8]);
+                check(cell_array[2], cell_array[4], cell_array[6]);
+                check(cell_array[0], cell_array[4], cell_array[8]);
+            }
+
+            function check(cell1, cell2, cell3) {
+                if (cell1 == cell2 && cell2 == cell3 && cell1 !== 0 && cell2 !== 0 && cell3 !== 0) {
+                    if (cell1 == 1) {
+                        text_player = "2";
+                        var player_mark = parseInt($("#mark_Player1").text()) + 100;
+                        $("#mark_Player1").text(player_mark);
+                    } else {
+                        text_player = "1";
+                        var player_mark = parseInt($("#mark_Player2").text()) + 100;
+                        $("#mark_Player2").text(player_mark);
+
+                    }
+                    $(".js-header").text("Student " + text_player + " answer the question.");
+                    con = false;
+                    question();
+                }
+            }
+
+            function question() {
+                var num = parseInt(Math.random() * 6);
+                if (question_used[num]) {
+                    console.log(num);
+                    question();
+                } else {
+                    question_used[num] = true;
+                    console.log(num);
+                    question_time++;
+                    $("#question_link").html("Question " + (num + 1));
+                    $("#question_link").attr("href", question_list[num]);
+                    $("#question_link").show();
+                    if (question_time == question_list.length) {
+                        question_used = reset_question;
+                        question_time = 0;
+                    }
+                }
+            }
+
+            $("#nr").click(function () {
+                player = 1;
+                con = true;
+                click = 0;
+                round++;
+                $(".js-header").text("Round " + round);
+                $(".cell").removeClass("bg-white bg-dark");
+                cell_array = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+                $(".img").hide();
+                $("#question_link").hide();
+            });
+
+            $("#p1_add").click(function () {
+                var player_mark = parseInt($("#mark_Player1").text()) + 50;
+                $("#mark_Player1").text(player_mark);
+            });
+
+            $("#p1_minus").click(function () {
+                var player_mark = parseInt($("#mark_Player1").text()) - 50;
+                $("#mark_Player1").text(player_mark);
+            });
+
+            $("#p2_add").click(function () {
+                var player_mark = parseInt($("#mark_Player2").text()) + 50;
+                $("#mark_Player2").text(player_mark);
+            });
+
+            $("#p2_minus").click(function () {
+                var player_mark = parseInt($("#mark_Player2").text()) - 50;
+                $("#mark_Player2").text(player_mark);
+            });
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <div class="text-left ">
+        <div class="flex-left">
+            <div>
+                <h1 class="p-3">Student 1</h1>
+            </div>
+            <div>
+                <img id="player1_img" src="">
+            </div>
+        </div>
+        <h1 class="p-3" id="mark_Player1">500</h1>
+    </div>
+    <h1 class="p-3 text-center js-header ">Round 1</h1>
+    <div class="text-center">
+        <a class="p-3" id="question_link" style="display: none;" href="#">Link</a>
+    </div>
+    <div class="text-right">
+        <div class="flex-right">
+            <div>
+                <img id="player2_img" src="">
+            </div>
+            <div>
+                <h1 class="p-3">Student 2</h1>
+            </div>
+        </div>
+        <h1 class="p-3" id="mark_Player2">500</h1>
+    </div>
+    <div class="grid ">
+        <div class="cell" id="0"><img class="img" id="img0" src=""></div>
+        <div class="cell" id="1"><img class="img" id="img1" src=""></div>
+        <div class="cell" id="2"><img class="img" id="img2" src=""></div>
+        <div class="cell" id="3"><img class="img" id="img3" src=""></div>
+        <div class="cell" id="4"><img class="img" id="img4" src=""></div>
+        <div class="cell" id="5"><img class="img" id="img5" src=""></div>
+        <div class="cell" id="6"><img class="img" id="img6" src=""></div>
+        <div class="cell" id="7"><img class="img" id="img7" src=""></div>
+        <div class="cell" id="8"><img class="img" id="img8" src=""></div>
+    </div>
+    <br />
+    <div class="text-center mt-3" id="div_teacher">
+        <h1 class="p-3">For Teacher</h1>
+        <div class="mark_box">
+            <div>
+                <h1 class="p-3">Student 1</h1>
+                <div>
+                    <button class="btn btn-outline-dark" id="p1_add">+50</button>
+                    <button class="btn btn-outline-dark" id="p1_minus">-50</button>
+                </div>
+            </div>
+            <div>
+                <h1 class="p-3">Student 2</h1>
+                <div>
+                    <button class="btn btn-outline-dark" id="p2_add">+50</button>
+                    <button class="btn btn-outline-dark" id="p2_minus">-50</button>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="text-center mt-3" id="div_nr">
+                <button class="btn btn-outline-dark" id="nr">Next Round</button>
+            </div>
+            <br />
+        </div>
+    </div>
+</body>
+
+</html>
