@@ -65,8 +65,10 @@
             var con = true;
             var question_time = 0;
             var question_list = ["https://www.google.com/", "2", "3", "4", "5", "6"];
-            var reset_question = [false, false, false, false, false, false];
-            var question_used = [false, false, false, false, false, false];
+            var question_used = [false, false]; 
+            for (var i = 0; i < question_list.length; i++) {
+                question_used[i] = false;
+            }
             var cell_array = [0, 0, 0, 0, 0, 0, 0, 0, 0];
             var img_list = ["https://img.zcool.cn/community/011fab5806e03aa84a0e282b529db9.gif", "http://pic.90sjimg.com/design/00/71/42/87/5923a8516acf0.png"];
 
@@ -90,7 +92,6 @@
                     click++;
                     test(cell_array);
                 }
-                console.log(cell_array);
                 if (click == 9) {
                     if (con) {
                         $(".js-header").text("Draw");
@@ -113,11 +114,11 @@
                 if (cell1 == cell2 && cell2 == cell3 && cell1 !== 0 && cell2 !== 0 && cell3 !== 0) {
                     if (cell1 == 1) {
                         text_player = "2";
-                        var player_mark = parseInt($("#mark_Player1").text()) + 100;
+                        var player_mark = parseInt($("#mark_Player1").text());
                         $("#mark_Player1").text(player_mark);
                     } else {
                         text_player = "1";
-                        var player_mark = parseInt($("#mark_Player2").text()) + 100;
+                        var player_mark = parseInt($("#mark_Player2").text());
                         $("#mark_Player2").text(player_mark);
 
                     }
@@ -130,17 +131,17 @@
             function question() {
                 var num = parseInt(Math.random() * 6);
                 if (question_used[num]) {
-                    console.log(num);
                     question();
                 } else {
                     question_used[num] = true;
-                    console.log(num);
                     question_time++;
                     $("#question_link").html("Question " + (num + 1));
                     $("#question_link").attr("href", question_list[num]);
                     $("#question_link").show();
                     if (question_time == question_list.length) {
-                        question_used = reset_question;
+                        for (var i = 0; i < question_list.length; i++) {
+                            question_used[i] = false;
+                        }
                         question_time = 0;
                     }
                 }
@@ -193,7 +194,7 @@
                 <img id="player1_img" src="">
             </div>
         </div>
-        <h1 class="p-3" id="mark_Player1">500</h1>
+        <h1 class="p-3" id="mark_Player1">400</h1>
     </div>
     <h1 class="p-3 text-center js-header ">Round 1</h1>
     <div class="text-center">
@@ -208,7 +209,7 @@
                 <h1 class="p-3">Student 2</h1>
             </div>
         </div>
-        <h1 class="p-3" id="mark_Player2">500</h1>
+        <h1 class="p-3" id="mark_Player2">400</h1>
     </div>
     <div class="grid ">
         <div class="cell" id="0"><img class="img" id="img0" src=""></div>
@@ -228,14 +229,12 @@
             <div>
                 <h1 class="p-3">Student 1</h1>
                 <div>
-                    <button class="btn btn-outline-dark" id="p1_add">+50</button>
                     <button class="btn btn-outline-dark" id="p1_minus">-50</button>
                 </div>
             </div>
             <div>
                 <h1 class="p-3">Student 2</h1>
                 <div>
-                    <button class="btn btn-outline-dark" id="p2_add">+50</button>
                     <button class="btn btn-outline-dark" id="p2_minus">-50</button>
                 </div>
             </div>
